@@ -1,6 +1,4 @@
 # 1. vw_executive_dashboard
-**Purpose:** A high-level summary for management and leadership.
-
 **Displays:** Project names, Sub-Project names, and the overall status of DPR, Work, and Monitoring.
 
 ```SQL
@@ -25,8 +23,6 @@ SELECT * FROM vw_executive_dashboard;
 
 
 # 2. vw_dpr_tracker
-**Purpose:** A focused lens for the planning, design, and approval teams.
-
 **Displays:** Only the steps related to the DPR phase, linked to their specific projects.
 
 ```SQL
@@ -52,8 +48,6 @@ SELECT * FROM vw_dpr_tracker WHERE project_name = 'Nashik Kumbhmela';
 
 
 # 3. vw_work_execution
-**Purpose:** The boots-on-the-ground construction and engineering view.
-
 **Displays:** Only the physical execution steps (Work Data) linked to the correct sub-project.
 
 ```SQL
@@ -76,8 +70,6 @@ SELECT * FROM vw_work_execution;
 
 
 # 4. vw_urgent_tasks
-**Purpose:** The ultimate cross-department "To-Do" list and bottleneck detector.
-
 **Displays:** Merges DPR, Work, Monitoring together, and shows  ONLY the tasks flagged with is_immediate = 1.
 
 ```SQL
