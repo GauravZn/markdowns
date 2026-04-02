@@ -32,7 +32,7 @@ SELECT
     sp.name AS sub_project_name,
     sp.dpr_status AS overall_dpr_status,
     d.heading AS dpr_step,
-    -- REMARKS: Cleaned status/notes
+    
     CASE 
         WHEN d.value LIKE '%{%' THEN COALESCE((d.value::json)->>'status', '')
         WHEN d.value ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN 'Recorded'
@@ -50,14 +50,14 @@ SELECT
             )
         ELSE COALESCE(TRIM(d.value), '') 
     END AS remarks,
-    -- AMOUNT: Financial extraction
+    
     CASE 
         WHEN d.value LIKE '%{%' THEN COALESCE((d.value::json)->'data'->>'amount', '')
         WHEN d.value LIKE '%|%' THEN COALESCE(SUBSTRING(d.value FROM '(?i)(?:Rs\.?[ \t]*)?[0-9]+(?:\.[0-9]+)?[ \t]*(?:Crore|Lakh|Cr)'), '')
         ELSE ''
     END AS amount,
     CASE WHEN d.value LIKE '%{%' THEN COALESCE((d.value::json)->'data'->>'amountUnit', '') ELSE '' END AS amount_unit,
-    -- STEP_DATE: Localized Indian Format (DD-MM-YYYY)
+   
     CASE 
         WHEN d.value LIKE '%{%' AND NULLIF(TRIM((d.value::json)->'data'->>'date'), '') IS NOT NULL 
             THEN TO_CHAR(((d.value::json)->'data'->>'date')::DATE, 'DD-MM-YYYY')
@@ -123,19 +123,19 @@ SELECT
     sp.name AS sub_project_name, 
     'DPR' AS phase, 
     d.heading AS task,
-    -- REMARKS COLUMN
+    
     CASE 
         WHEN d.value LIKE '%{%' THEN COALESCE((d.value::json)->>'status', '') 
         WHEN d.value ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN 'Recorded' 
         ELSE TRIM(BOTH ' , ' FROM REGEXP_REPLACE(REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(d.value, '(?i)(?:Rs\.?[ \t]*)?[0-9]+(?:\.[0-9]+)?[ \t]*(?:Crore|Lakh|Cr)', '', 'g'), '[0-9]{4}-[0-9]{2}-[0-9]{2}', '', 'g'), '|', ','), '([ \t]*,[ \t]*)+', ', ', 'g')) 
     END AS remarks,
-    -- AMOUNT COLUMN
+    
     CASE 
         WHEN d.value LIKE '%{%' THEN COALESCE((d.value::json)->'data'->>'amount', '') 
         WHEN d.value LIKE '%|%' THEN COALESCE(SUBSTRING(d.value FROM '(?i)(?:Rs\.?[ \t]*)?[0-9]+(?:\.[0-9]+)?[ \t]*(?:Crore|Lakh|Cr)'), '') 
         ELSE '' 
     END AS amount,
-    -- DATE COLUMN (Indian Format)
+  
     CASE 
         WHEN d.value LIKE '%{%' AND NULLIF(TRIM((d.value::json)->'data'->>'date'), '') IS NOT NULL THEN TO_CHAR(((d.value::json)->'data'->>'date')::DATE, 'DD-MM-YYYY') 
         WHEN SUBSTRING(d.value FROM '[0-9]{4}-[0-9]{2}-[0-9]{2}') IS NOT NULL THEN TO_CHAR((SUBSTRING(d.value FROM '[0-9]{4}-[0-9]{2}-[0-9]{2}'))::DATE, 'DD-MM-YYYY') 
@@ -185,19 +185,19 @@ SELECT
     sp.name AS sub_project_name, 
     'Monitoring' AS phase, 
     m.heading AS task,
-    -- REMARKS COLUMN (Must match Section 1)
+    
     CASE 
         WHEN m.value LIKE '%{%' THEN COALESCE((m.value::json)->>'status', '') 
         WHEN m.value ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN 'Recorded' 
         ELSE TRIM(BOTH ' , ' FROM REGEXP_REPLACE(REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(m.value, '(?i)(?:Rs\.?[ \t]*)?[0-9]+(?:\.[0-9]+)?[ \t]*(?:Crore|Lakh|Cr)', '', 'g'), '[0-9]{4}-[0-9]{2}-[0-9]{2}', '', 'g'), '|', ','), '([ \t]*,[ \t]*)+', ', ', 'g')) 
     END AS remarks,
-    -- AMOUNT COLUMN (Must match Section 1)
+  
     CASE 
         WHEN m.value LIKE '%{%' THEN COALESCE((m.value::json)->'data'->>'amount', '') 
         WHEN m.value LIKE '%|%' THEN COALESCE(SUBSTRING(m.value FROM '(?i)(?:Rs\.?[ \t]*)?[0-9]+(?:\.[0-9]+)?[ \t]*(?:Crore|Lakh|Cr)'), '') 
         ELSE '' 
     END AS amount,
-    -- DATE COLUMN (Must match Section 1)
+   
     CASE 
         WHEN m.value LIKE '%{%' AND NULLIF(TRIM((m.value::json)->'data'->>'date'), '') IS NOT NULL THEN TO_CHAR(((m.value::json)->'data'->>'date')::DATE, 'DD-MM-YYYY') 
         WHEN SUBSTRING(m.value FROM '[0-9]{4}-[0-9]{2}-[0-9]{2}') IS NOT NULL THEN TO_CHAR((SUBSTRING(m.value FROM '[0-9]{4}-[0-9]{2}-[0-9]{2}'))::DATE, 'DD-MM-YYYY') 
